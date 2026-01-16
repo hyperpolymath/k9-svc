@@ -12,46 +12,30 @@ let Architecture = [| 'Linux, 'Minix, 'MacOS, 'Android, 'PC, 'ASIC, 'Unknown |] 
   # L1: The Snout - Identity
   # ─────────────────────────────────────────────────────────────
   Metadata = {
-    name
-      | String
-      | doc "Component name (lowercase, hyphenated)",
-    version
-      | String
-      | default = "1.0.0-alpha"
-      | doc "SemVer with stability suffix",
-    breed
-      | String
-      | default = "application/vnd.k9+nickel"
-      | doc "MIME type identifier",
-    magic_number
-      | String
-      | default = "K9!"
-      | doc "Binary signature for kernel identification",
-    description
-      | String
-      | optional
-      | doc "Human-readable component purpose",
+    # Component name (lowercase, hyphenated)
+    name | String,
+    # SemVer with stability suffix
+    version | String | default = "1.0.0-alpha",
+    # MIME type identifier
+    breed | String | default = "application/vnd.k9+nickel",
+    # Binary signature for kernel identification
+    magic_number | String | default = "K9!",
+    # Human-readable component purpose
+    description | String | optional,
   },
 
   # ─────────────────────────────────────────────────────────────
   # L2: The Scent - Target Environment
   # ─────────────────────────────────────────────────────────────
   Target = {
-    os
-      | Architecture
-      | doc "Primary deployment architecture",
-    is_edge
-      | Bool
-      | default = false
-      | doc "Constrained environment (< 1GB RAM, no Podman)",
-    requires_podman
-      | Bool
-      | default = true
-      | doc "Whether deployment needs container runtime",
-    min_memory_mb
-      | Number
-      | default = 256
-      | doc "Minimum memory requirement",
+    # Primary deployment architecture
+    os | Architecture,
+    # Constrained environment (< 1GB RAM, no Podman)
+    is_edge | Bool | default = false,
+    # Whether deployment needs container runtime
+    requires_podman | Bool | default = true,
+    # Minimum memory requirement in MB
+    min_memory_mb | Number | default = 256,
   },
 
   # ─────────────────────────────────────────────────────────────
@@ -63,66 +47,43 @@ let Architecture = [| 'Linux, 'Minix, 'MacOS, 'Android, 'PC, 'ASIC, 'Unknown |] 
   # 'Hunt:   Full triad execution. Requires handshake.
   #
   Security = {
-    trust_level
-      | SecurityLevel
-      | default = 'Yard
-      | doc "Execution permission tier",
-    allow_network
-      | Bool
-      | default = false
-      | doc "Can fetch external resources",
-    allow_filesystem_write
-      | Bool
-      | default = false
-      | doc "Can modify host filesystem",
-    allow_subprocess
-      | Bool
-      | default = false
-      | doc "Can spawn child processes",
-    signature
-      | String
-      | optional
-      | doc "Cryptographic handshake for Hunt level",
+    # Execution permission tier
+    trust_level | SecurityLevel | default = 'Yard,
+    # Can fetch external resources
+    allow_network | Bool | default = false,
+    # Can modify host filesystem
+    allow_filesystem_write | Bool | default = false,
+    # Can spawn child processes
+    allow_subprocess | Bool | default = false,
+    # Cryptographic handshake for Hunt level
+    signature | String | optional,
   },
 
   # ─────────────────────────────────────────────────────────────
   # L4: The Gut - Self-Validation (Dogfooding)
   # ─────────────────────────────────────────────────────────────
   Validation = {
-    checksum
-      | String
-      | doc "SHA256 of component payload",
-    pedigree_version
-      | String
-      | default = "1.0.0"
-      | doc "Version of this pedigree schema",
+    # SHA256 of component payload
+    checksum | String,
+    # Version of this pedigree schema
+    pedigree_version | String | default = "1.0.0",
     # Contract: Hunt requires valid signature
-    hunt_authorized
-      | Bool
-      | default = false
-      | doc "Computed: true if Hunt level is safe to execute",
+    # Computed: true if Hunt level is safe to execute
+    hunt_authorized | Bool | default = false,
   },
 
   # ─────────────────────────────────────────────────────────────
   # L5: The Muscle - Deployment Recipes
   # ─────────────────────────────────────────────────────────────
   Recipes = {
-    install
-      | String
-      | default = "just install"
-      | doc "Installation recipe",
-    validate
-      | String
-      | default = "just validate"
-      | doc "Self-validation recipe",
-    deploy
-      | String
-      | default = "just deploy"
-      | doc "Deployment recipe (Podman or native)",
-    migrate
-      | String
-      | default = "just migrate"
-      | doc "Version migration recipe (zero-deprecation)",
+    # Installation recipe
+    install | String | default = "just install",
+    # Self-validation recipe
+    validate | String | default = "just validate",
+    # Deployment recipe (Podman or native)
+    deploy | String | default = "just deploy",
+    # Version migration recipe (zero-deprecation)
+    migrate | String | default = "just migrate",
   },
 
   # ─────────────────────────────────────────────────────────────
