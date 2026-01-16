@@ -1,0 +1,123 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+= K9: Self-Validating Components
+:toc: preamble
+:toclevels: 2
+:icons: font
+:source-highlighter: rouge
+
+A file format that "eats its own dog food."
+
+== What is K9?
+
+K9 is a Self-Validating Component (SVC) standard built on the **must-just-nickel** triad.
+Unlike passive file formats that rely on external applications to interpret them, a `.k9` file
+carries its own validation contracts and deployment logic.
+
+[IMPORTANT]
+====
+A `.k9` file is not a document you open; it is a component you unleash.
+====
+
+== Quick Start
+
+[source,bash]
+----
+# Clone the repo
+git clone https://github.com/hyperpolymath/k9-svc.git
+cd k9-svc
+
+# Check environment
+./must status
+
+# Ensure dependencies (Nickel + Just)
+./must ensure
+
+# Register MIME type
+./must run register-user
+
+# Validate everything
+./must run dogfood
+----
+
+== The Triad
+
+[cols="1,2,3"]
+|===
+|Layer |Component |Function
+
+|**Must**
+|Environment Shim
+|Detects OS/architecture, ensures Nickel and Just are available
+
+|**Just**
+|Orchestration
+|Task runner that executes build, validate, deploy recipes
+
+|**Nickel**
+|Validation Engine
+|Typed configuration language that enforces contracts
+|===
+
+== Security Levels (The "Leash")
+
+K9 implements tiered execution to prevent abuse:
+
+[horizontal]
+`'Kennel`:: Pure data. No execution. Safe to open anywhere.
+`'Yard`:: Nickel evaluation only. No I/O side effects.
+`'Hunt`:: Full triad execution. Requires cryptographic handshake.
+
+== File Recognition
+
+[cols="1,2"]
+|===
+|Attribute |Value
+
+|Magic Number
+|`K9!` (`\x4B\x39\x21`)
+
+|MIME Type
+|`application/vnd.k9+nickel`
+
+|Extensions
+|`.k9`, `.k9.ncl`
+|===
+
+== Repository Structure
+
+[source]
+----
+k9-svc/
+├── must              # Environment shim (POSIX shell)
+├── justfile          # Orchestration recipes
+├── pedigree.ncl      # Core schema (The Brain)
+├── register.ncl      # MIME registration logic
+├── README.adoc       # This file
+├── SPEC.adoc         # Full specification / whitepaper
+└── examples/
+    └── hello.k9      # Example component
+----
+
+== Philosophy
+
+The "dogfooding" principle: **a format should be able to validate and deploy itself.**
+
+Traditional formats separate data from logic. This creates:
+
+- **Bit rot**: Data survives, but the tools to interpret it die
+- **Platform lock-in**: Files only work with specific applications
+- **Silent corruption**: Invalid data isn't detected until runtime failure
+
+K9 solves this by embedding validation contracts (Nickel) and deployment
+recipes (Just) directly in the component. If the file can't "eat its own
+config," it refuses to run.
+
+== Links
+
+* link:SPEC.adoc[Full Specification]
+* link:https://nickel-lang.org[Nickel Language]
+* link:https://just.systems[Just Task Runner]
+
+== License
+
+AGPL-3.0-or-later

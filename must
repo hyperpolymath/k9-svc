@@ -1,0 +1,176 @@
+#!/bin/sh
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# must - Environment shim for the k9 SVC triad
+# Usage: ./must [command]
+#
+# The "must" in must-just-nickel. Detects architecture, ensures
+# dependencies, then hands off to Just for orchestration.
+
+set -eu
+
+K9_VERSION="1.0.0-alpha"
+K9_MAGIC="K9!"
+
+# ─────────────────────────────────────────────────────────────
+# L1: The Scent - Environment Detection
+# ─────────────────────────────────────────────────────────────
+
+detect_os() {
+    case "$(uname -s)" in
+        Linux)
+            if [ -f /etc/minix-release ]; then
+                echo "Minix"
+            elif [ -f /system/build.prop ]; then
+                echo "Android"
+            else
+                echo "Linux"
+            fi
+            ;;
+        Darwin)  echo "MacOS" ;;
+        MINIX)   echo "Minix" ;;
+        *)       echo "Unknown" ;;
+    esac
+}
+
+detect_arch() {
+    case "$(uname -m)" in
+        x86_64|amd64)  echo "x86_64" ;;
+        aarch64|arm64) echo "aarch64" ;;
+        armv7l)        echo "armv7" ;;
+        riscv64)       echo "riscv64" ;;
+        *)             echo "$(uname -m)" ;;
+    esac
+}
+
+is_edge() {
+    # Edge detection: low memory or known embedded platforms
+    if [ -f /proc/meminfo ]; then
+        mem_kb=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+        [ "$mem_kb" -lt 1048576 ] && return 0  # < 1GB
+    fi
+    return 1
+}
+
+has_podman() {
+    command -v podman >/dev/null 2>&1
+}
+
+# ─────────────────────────────────────────────────────────────
+# L2: The Brain - Dependency Verification
+# ─────────────────────────────────────────────────────────────
+
+ensure_nickel() {
+    if ! command -v nickel >/dev/null 2>&1; then
+        echo "K9: Nickel not found. Installing..." >&2
+        case "$(detect_os)" in
+            Linux)
+                if command -v cargo >/dev/null 2>&1; then
+                    cargo install nickel-lang-cli
+                else
+                    echo "K9: Requires cargo or manual Nickel installation" >&2
+                    exit 1
+                fi
+                ;;
+            MacOS)
+                if command -v brew >/dev/null 2>&1; then
+                    brew install nickel
+                else
+                    echo "K9: Requires Homebrew or manual Nickel installation" >&2
+                    exit 1
+                fi
+                ;;
+            *)
+                echo "K9: Manual Nickel installation required for $(detect_os)" >&2
+                exit 1
+                ;;
+        esac
+    fi
+}
+
+ensure_just() {
+    if ! command -v just >/dev/null 2>&1; then
+        echo "K9: Just not found. Installing..." >&2
+        case "$(detect_os)" in
+            Linux)
+                if command -v cargo >/dev/null 2>&1; then
+                    cargo install just
+                else
+                    echo "K9: Requires cargo or manual Just installation" >&2
+                    exit 1
+                fi
+                ;;
+            MacOS)
+                if command -v brew >/dev/null 2>&1; then
+                    brew install just
+                else
+                    echo "K9: Requires Homebrew or manual Just installation" >&2
+                    exit 1
+                fi
+                ;;
+            *)
+                echo "K9: Manual Just installation required for $(detect_os)" >&2
+                exit 1
+                ;;
+        esac
+    fi
+}
+
+# ─────────────────────────────────────────────────────────────
+# L3: The Muscle - Handoff to Just
+# ─────────────────────────────────────────────────────────────
+
+export_env() {
+    export K9_OS="$(detect_os)"
+    export K9_ARCH="$(detect_arch)"
+    export K9_VERSION
+    export K9_MAGIC
+    if is_edge; then
+        export K9_EDGE="true"
+    else
+        export K9_EDGE="false"
+    fi
+    if has_podman; then
+        export K9_HAS_PODMAN="true"
+    else
+        export K9_HAS_PODMAN="false"
+    fi
+}
+
+main() {
+    export_env
+
+    case "${1:-status}" in
+        status)
+            echo "K9 Environment Report"
+            echo "────────────────────────"
+            echo "OS:      $K9_OS"
+            echo "Arch:    $K9_ARCH"
+            echo "Edge:    $K9_EDGE"
+            echo "Podman:  $K9_HAS_PODMAN"
+            echo "Version: $K9_VERSION"
+            ;;
+        ensure)
+            echo "K9: Ensuring triad dependencies..." >&2
+            ensure_nickel
+            ensure_just
+            echo "K9: Triad ready." >&2
+            ;;
+        run)
+            shift
+            ensure_nickel
+            ensure_just
+            exec just "$@"
+            ;;
+        *)
+            echo "K9 must shim v$K9_VERSION"
+            echo "Usage: must [status|ensure|run <recipe>]"
+            echo ""
+            echo "Commands:"
+            echo "  status  - Show environment detection"
+            echo "  ensure  - Install Nickel and Just if missing"
+            echo "  run     - Ensure deps then execute: just <args>"
+            ;;
+    esac
+}
+
+main "$@"
