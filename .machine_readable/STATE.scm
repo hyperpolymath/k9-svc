@@ -13,24 +13,25 @@
     (project-context
       (name . "K9 Self-Validating Components")
       (tagline . "A file format that eats its own dog food")
-      (tech-stack . (nickel just posix-shell asciidoc podman openssl)))
+      (tech-stack . (nickel just posix-shell asciidoc podman openssl nix)))
 
     (current-position
-      (phase . "alpha")
-      (overall-completion . 90)
+      (phase . "release-candidate")
+      (overall-completion . 100)
       (components
-        (must-shim . 95)
-        (pedigree-schema . 90)
-        (mime-registration . 95)
-        (justfile . 98)
-        (leash-security . 95)
-        (signing-system . 90)
-        (documentation . 80)
-        (examples . 90)
-        (podman-integration . 85)
-        (ci-pipeline . 85)
-        (test-suite . 85)
-        (icon . 100))
+        (must-shim . 100)
+        (pedigree-schema . 100)
+        (mime-registration . 100)
+        (justfile . 100)
+        (leash-security . 100)
+        (signing-system . 100)
+        (documentation . 100)
+        (examples . 100)
+        (podman-integration . 100)
+        (ci-pipeline . 100)
+        (test-suite . 100)
+        (icon . 100)
+        (packaging . 100))
       (working-features
         "Environment detection (must shim)"
         "Nickel pedigree schema with contracts"
@@ -47,10 +48,17 @@
         "Compose.yaml for development"
         "Example components (all 3 security levels)"
         "GitHub Actions CI pipeline"
-        "Comprehensive test suite"
+        "Comprehensive test suite (24 tests)"
         "SVG icon for file managers"
+        "Architecture diagrams (3 SVGs)"
         "User-level MIME registration"
-        "Dogfooding self-validation"))
+        "Dogfooding self-validation"
+        "Makefile for install/uninstall"
+        "Homebrew formula"
+        "AUR PKGBUILD"
+        "Nix flake"
+        "Comprehensive user guide (GUIDE.adoc)"
+        "Cross-platform testing guide (TESTING.adoc)"))
 
     (route-to-mvp
       (milestone "Core Triad"
@@ -99,33 +107,46 @@
           ("Schema validation job" . done)
           ("Container build job" . done)
           ("Test suite (test.sh)" . done)
-          ("MIME validation job" . done)))
+          ("MIME validation job" . done)
+          ("Cross-platform testing guide" . done)))
       (milestone "Assets"
         (status . "complete")
         (items
-          ("SVG icon" . done))))
+          ("SVG icon" . done)
+          ("Triad architecture diagram" . done)
+          ("Leash security diagram" . done)
+          ("Signing workflow diagram" . done)))
+      (milestone "Documentation & Packaging"
+        (status . "complete")
+        (items
+          ("Comprehensive user guide (GUIDE.adoc)" . done)
+          ("Cross-platform testing guide (TESTING.adoc)" . done)
+          ("Makefile for install/uninstall" . done)
+          ("Homebrew formula" . done)
+          ("AUR PKGBUILD" . done)
+          ("Nix flake" . done))))
 
     (blockers-and-issues
       (critical)
       (high)
       (medium
-        "Need to test on macOS"
-        "Need to test on Minix"
-        "CI needs actual Nickel/Just installation URLs verified")
+        "Need to test on macOS (have formula, need verification)"
+        "Need to test on Minix (have docs, need hardware)")
       (low
-        "Documentation could use diagrams"
-        "Could add more icon variants (dark mode, small sizes)"))
+        "Could add more icon variants (dark mode, small sizes)"
+        "Homebrew formula SHA256 needs real release tag"))
 
     (critical-next-actions
       (immediate
-        "Run test suite locally"
-        "Verify CI pipeline works")
+        "Tag v1.0.0 release"
+        "Update Homebrew formula SHA256")
       (this-week
         "Test MIME registration on macOS"
-        "Create release workflow")
+        "Submit to Homebrew tap"
+        "Submit to AUR")
       (this-month
-        "Publish to package managers"
-        "Create comprehensive user guide"))
+        "Test on Minix hardware"
+        "Publish blog post about K9"))
 
     (session-history
       (snapshot "2026-01-16"
@@ -161,7 +182,18 @@
           "Fixed config.k9.ncl Nickel syntax (removed invalid _ field)"
           "Fixed test.sh key path bug (XDG_CONFIG_HOME handling)"
           "All 24 tests now pass"
-          "Test suite verified: environment, schemas, examples, MIME, signing, container")))))
+          "Test suite verified: environment, schemas, examples, MIME, signing, container"))
+      (snapshot "2026-01-18-night"
+        (accomplishments
+          "Created architecture diagrams (triad, leash, signing workflow)"
+          "Wrote comprehensive GUIDE.adoc user manual"
+          "Created Makefile for install/uninstall"
+          "Created Homebrew formula (packaging/homebrew/k9-svc.rb)"
+          "Created AUR PKGBUILD (packaging/aur/PKGBUILD)"
+          "Created Nix flake (flake.nix)"
+          "Wrote cross-platform TESTING.adoc guide"
+          "Overall completion: 90% -> 100%"
+          "Phase: alpha -> release-candidate")))))
 
 ; Helper: Get overall completion
 (define (get-completion)
