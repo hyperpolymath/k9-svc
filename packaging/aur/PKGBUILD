@@ -16,7 +16,7 @@ optdepends=(
 )
 makedepends=('git')
 source=("$pkgname-$pkgver.tar.gz::https://github.com/hyperpolymath/$pkgname/archive/v$pkgver.tar.gz")
-sha256sums=('SKIP')
+sha256sums=('82e51dec2891728d233392f6e84004e5d6060bf2c936dd47445d59ca66c09f94')
 
 package() {
     cd "$srcdir/$pkgname-$pkgver"

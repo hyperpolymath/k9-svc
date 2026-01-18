@@ -16,7 +16,9 @@
       (tech-stack . (nickel just posix-shell asciidoc podman openssl nix)))
 
     (current-position
-      (phase . "release-candidate")
+      (phase . "released")
+      (release-version . "1.0.0")
+      (release-date . "2026-01-18")
       (overall-completion . 100)
       (components
         (must-shim . 100)
@@ -133,17 +135,14 @@
         "Need to test on macOS (have formula, need verification)"
         "Need to test on Minix (have docs, need hardware)")
       (low
-        "Could add more icon variants (dark mode, small sizes)"
-        "Homebrew formula SHA256 needs real release tag"))
+        "Could add more icon variants (dark mode, small sizes)"))
 
     (critical-next-actions
       (immediate
-        "Tag v1.0.0 release"
-        "Update Homebrew formula SHA256")
+        "Submit to AUR (requires AUR account)")
       (this-week
         "Test MIME registration on macOS"
-        "Submit to Homebrew tap"
-        "Submit to AUR")
+        "Test Homebrew formula on macOS")
       (this-month
         "Test on Minix hardware"
         "Publish blog post about K9"))
@@ -193,7 +192,18 @@
           "Created Nix flake (flake.nix)"
           "Wrote cross-platform TESTING.adoc guide"
           "Overall completion: 90% -> 100%"
-          "Phase: alpha -> release-candidate")))))
+          "Phase: alpha -> release-candidate"))
+      (snapshot "2026-01-18-release"
+        (accomplishments
+          "Tagged v1.0.0 release"
+          "Created GitHub release with release notes"
+          "Updated Homebrew formula with SHA256"
+          "Updated AUR PKGBUILD with SHA256"
+          "Created homebrew-k9 tap repository"
+          "Published Homebrew tap (brew tap hyperpolymath/k9)"
+          "Created AUR .SRCINFO and submission guide"
+          "Phase: release-candidate -> released"
+          "K9 SVC v1.0.0 officially released!")))))
 
 ; Helper: Get overall completion
 (define (get-completion)
