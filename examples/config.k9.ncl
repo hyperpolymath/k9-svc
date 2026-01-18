@@ -47,10 +47,8 @@ let config = {
   # Database connection settings
   database | {
     host | String | default = "localhost",
-    port | Number | default = 5432,
+    port | std.contract.from_predicate (fun p => p > 0 && p < 65536) | default = 5432,
     name | String,
-    # Contract: port must be valid
-    _ | std.contract.from_predicate (fun r => r.port > 0 && r.port < 65536),
   } = {
     host = "db.example.com",
     port = 5432,
@@ -60,10 +58,8 @@ let config = {
   # Cache settings
   cache | {
     enabled | Bool | default = true,
-    ttl_seconds | Number | default = 300,
+    ttl_seconds | std.contract.from_predicate (fun t => t > 0) | default = 300,
     max_entries | Number | default = 1000,
-    # Contract: TTL must be positive
-    _ | std.contract.from_predicate (fun r => r.ttl_seconds > 0),
   } = {
     enabled = true,
     ttl_seconds = 600,

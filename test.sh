@@ -267,8 +267,8 @@ test_signing() {
         if ./sign.sh sign "$tmpdir/testfile" test 2>/dev/null; then
             pass "Signing works"
 
-            # Trust the key
-            ./sign.sh trust "$tmpdir/.config/k9/keys/test.pub" 2>/dev/null
+            # Trust the key (XDG_CONFIG_HOME is $tmpdir, so keys are in $tmpdir/k9/keys/)
+            ./sign.sh trust "$tmpdir/k9/keys/test.pub" 2>/dev/null
 
             # Test verification
             if ./sign.sh verify "$tmpdir/testfile" 2>/dev/null; then

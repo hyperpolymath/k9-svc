@@ -155,7 +155,13 @@
           "Added .github/workflows/ci.yml"
           "Created comprehensive test.sh"
           "Added signing and test recipes to justfile"
-          "Overall completion: 75% -> 90%")))))
+          "Overall completion: 75% -> 90%"))
+      (snapshot "2026-01-18-evening"
+        (accomplishments
+          "Fixed config.k9.ncl Nickel syntax (removed invalid _ field)"
+          "Fixed test.sh key path bug (XDG_CONFIG_HOME handling)"
+          "All 24 tests now pass"
+          "Test suite verified: environment, schemas, examples, MIME, signing, container")))))
 
 ; Helper: Get overall completion
 (define (get-completion)
