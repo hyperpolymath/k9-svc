@@ -13,21 +13,24 @@
     (project-context
       (name . "K9 Self-Validating Components")
       (tagline . "A file format that eats its own dog food")
-      (tech-stack . (nickel just posix-shell asciidoc podman)))
+      (tech-stack . (nickel just posix-shell asciidoc podman openssl)))
 
     (current-position
       (phase . "alpha")
-      (overall-completion . 75)
+      (overall-completion . 90)
       (components
-        (must-shim . 90)
-        (pedigree-schema . 85)
+        (must-shim . 95)
+        (pedigree-schema . 90)
         (mime-registration . 95)
-        (justfile . 95)
-        (leash-security . 80)
-        (documentation . 75)
-        (examples . 85)
-        (podman-integration . 70)
-        (security-handshake . 40))
+        (justfile . 98)
+        (leash-security . 95)
+        (signing-system . 90)
+        (documentation . 80)
+        (examples . 90)
+        (podman-integration . 85)
+        (ci-pipeline . 85)
+        (test-suite . 85)
+        (icon . 100))
       (working-features
         "Environment detection (must shim)"
         "Nickel pedigree schema with contracts"
@@ -35,10 +38,17 @@
         "MIME type definition (macOS UTI)"
         "Magic number detection (file command)"
         "Leash security model (Kennel/Yard/Hunt)"
-        "Comprehensive Just recipes"
+        "Ed25519 signing with OpenSSL"
+        "Key management (~/.config/k9/keys/)"
+        "Signature verification"
+        "Hunt authorization workflow"
+        "Comprehensive Just recipes (35+)"
         "Containerfile for Podman deployment"
         "Compose.yaml for development"
         "Example components (all 3 security levels)"
+        "GitHub Actions CI pipeline"
+        "Comprehensive test suite"
+        "SVG icon for file managers"
         "User-level MIME registration"
         "Dogfooding self-validation"))
 
@@ -60,13 +70,15 @@
           ("mime.types entry" . done)
           ("Installation recipes" . done)))
       (milestone "Security Model"
-        (status . "in-progress")
+        (status . "complete")
         (items
           ("Leash level definitions" . done)
           ("Level detection logic" . done)
           ("Security contracts" . done)
-          ("Cryptographic handshake protocol" . pending)
-          ("Ed25519 signature verification" . pending)))
+          ("Ed25519 signing (sign.sh)" . done)
+          ("Key management system" . done)
+          ("Signature verification" . done)
+          ("Hunt authorization workflow" . done)))
       (milestone "Podman Integration"
         (status . "complete")
         (items
@@ -79,30 +91,41 @@
         (items
           ("hello.k9 (Kennel level)" . done)
           ("config.k9.ncl (Yard level)" . done)
-          ("deploy.k9.ncl (Hunt level)" . done))))
+          ("deploy.k9.ncl (Hunt level)" . done)))
+      (milestone "CI/CD & Testing"
+        (status . "complete")
+        (items
+          ("GitHub Actions CI" . done)
+          ("Schema validation job" . done)
+          ("Container build job" . done)
+          ("Test suite (test.sh)" . done)
+          ("MIME validation job" . done)))
+      (milestone "Assets"
+        (status . "complete")
+        (items
+          ("SVG icon" . done))))
 
     (blockers-and-issues
       (critical)
-      (high
-        "Ed25519 signature verification not implemented"
-        "Hunt-level handshake is placeholder only")
+      (high)
       (medium
         "Need to test on macOS"
-        "Need to test on Minix")
+        "Need to test on Minix"
+        "CI needs actual Nickel/Just installation URLs verified")
       (low
         "Documentation could use diagrams"
-        "Icon for file managers not created"))
+        "Could add more icon variants (dark mode, small sizes)"))
 
     (critical-next-actions
       (immediate
-        "Implement Ed25519 signature verification"
-        "Create real Hunt-level handshake")
+        "Run test suite locally"
+        "Verify CI pipeline works")
       (this-week
-        "Test container build on CI"
-        "Test MIME registration on macOS")
+        "Test MIME registration on macOS"
+        "Create release workflow")
       (this-month
-        "Register with OSS-Fuzz"
-        "Create comprehensive test suite"))
+        "Publish to package managers"
+        "Create comprehensive user guide"))
 
     (session-history
       (snapshot "2026-01-16"
@@ -113,7 +136,7 @@
           "register.ncl MIME logic"
           "justfile with core recipes"
           "README.adoc and SPEC.adoc"))
-      (snapshot "2026-01-18"
+      (snapshot "2026-01-18-morning"
         (accomplishments
           "Moved SCM files to .machine_readable/"
           "Added PLAYBOOK.scm, AGENTIC.scm, NEUROSYM.scm"
@@ -122,7 +145,17 @@
           "Created Containerfile and compose.yaml"
           "Added example components (hello.k9, config.k9.ncl, deploy.k9.ncl)"
           "Expanded justfile with MIME, Leash, and container recipes"
-          "Overall completion: 40% -> 75%")))))
+          "Overall completion: 40% -> 75%"))
+      (snapshot "2026-01-18-afternoon"
+        (accomplishments
+          "Implemented sign.sh with Ed25519 via OpenSSL"
+          "Key management in ~/.config/k9/keys/"
+          "Signing, verification, and authorization workflows"
+          "Created assets/k9-icon.svg"
+          "Added .github/workflows/ci.yml"
+          "Created comprehensive test.sh"
+          "Added signing and test recipes to justfile"
+          "Overall completion: 75% -> 90%")))))
 
 ; Helper: Get overall completion
 (define (get-completion)

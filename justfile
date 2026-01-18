@@ -260,3 +260,46 @@ uninstall-mime:
     @update-mime-database ~/.local/share/mime 2>/dev/null || true
     @rm -f ~/.magic
     @echo "K9: MIME registration removed."
+
+# ─────────────────────────────────────────────────────────────
+# Signing (Hunt Authorization)
+# ─────────────────────────────────────────────────────────────
+
+# Generate a new signing keypair
+keygen name="primary":
+    @./sign.sh keygen {{name}}
+
+# Sign a component file
+sign file name="primary":
+    @./sign.sh sign {{file}} {{name}}
+
+# Verify a component's signature
+verify file:
+    @./sign.sh verify {{file}}
+
+# Full Hunt authorization check
+authorize file:
+    @./sign.sh authorize {{file}}
+
+# Add a public key to trusted keys
+trust pubkey:
+    @./sign.sh trust {{pubkey}}
+
+# List all keys
+list-keys:
+    @./sign.sh list
+
+# ─────────────────────────────────────────────────────────────
+# Testing
+# ─────────────────────────────────────────────────────────────
+
+# Run the test suite
+test:
+    @./test.sh
+
+# Quick validation test
+test-quick:
+    @echo "K9: Quick test..."
+    @nickel typecheck pedigree.ncl
+    @nickel typecheck leash.ncl
+    @echo "K9: Quick test passed."
