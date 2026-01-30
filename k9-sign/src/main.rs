@@ -18,6 +18,9 @@ use sha2::{Digest, Sha256};
 use std::fs;
 use std::path::{Path, PathBuf};
 
+#[cfg(test)]
+mod tests;
+
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 /// K9 Signing Tool - Ed25519 signatures for Hunt-level components
@@ -78,14 +81,27 @@ struct KeyDirs {
 
 impl KeyDirs {
     fn new() -> Result<Self> {
-        let config = dirs::config_dir()
-            .context("Could not determine config directory")?
-            .join("k9");
+        Self::with_config_dir(None)
+    }
+
+    #[cfg(test)]
+    fn with_config_dir(config_dir: Option<PathBuf>) -> Result<Self> {
+        let config = match config_dir {
+            Some(dir) => dir.join("k9"),
+            None => dirs::config_dir()
+                .context("Could not determine config directory")?
+                .join("k9"),
+        };
 
         let keys = config.join("keys");
         let trusted = keys.join("trusted");
 
         Ok(KeyDirs { keys, trusted })
+    }
+
+    #[cfg(not(test))]
+    fn with_config_dir(_config_dir: Option<PathBuf>) -> Result<Self> {
+        Self::new()
     }
 
     fn ensure_created(&self) -> Result<()> {
@@ -117,7 +133,7 @@ impl KeyDirs {
 }
 
 /// Generate a new Ed25519 keypair
-fn cmd_keygen(name: &str) -> Result<()> {
+pub(crate) fn cmd_keygen(name: &str) -> Result<()> {
     let dirs = KeyDirs::new()?;
     dirs.ensure_created()?;
 
@@ -166,7 +182,7 @@ fn cmd_keygen(name: &str) -> Result<()> {
 }
 
 /// Sign a file with a private key
-fn cmd_sign(file: &Path, key_name: &str) -> Result<()> {
+pub(crate) fn cmd_sign(file: &Path, key_name: &str) -> Result<()> {
     let dirs = KeyDirs::new()?;
     dirs.ensure_created()?;
 
@@ -200,8 +216,8 @@ fn cmd_sign(file: &Path, key_name: &str) -> Result<()> {
     // Create signature
     let signature = signing_key.sign(&file_data);
 
-    // Write binary signature
-    let sig_path = file.with_extension("k9.ncl.sig");
+    // Write binary signature (append .sig to filename)
+    let sig_path = PathBuf::from(format!("{}.sig", file.display()));
     fs::write(&sig_path, signature.to_bytes()).context("Failed to write signature")?;
 
     // Create base64 version for embedding
@@ -219,7 +235,7 @@ fn cmd_sign(file: &Path, key_name: &str) -> Result<()> {
 }
 
 /// Verify a file's signature against trusted keys
-fn cmd_verify(file: &Path) -> Result<()> {
+pub(crate) fn cmd_verify(file: &Path) -> Result<()> {
     let dirs = KeyDirs::new()?;
     dirs.ensure_created()?;
 
@@ -227,7 +243,7 @@ fn cmd_verify(file: &Path) -> Result<()> {
         anyhow::bail!("File not found: {:?}", file);
     }
 
-    let sig_path = file.with_extension("k9.ncl.sig");
+    let sig_path = PathBuf::from(format!("{}.sig", file.display()));
     if !sig_path.exists() {
         anyhow::bail!(
             "Signature not found: {:?}\nSign the file first with: k9-sign sign {:?}",
@@ -315,7 +331,7 @@ fn cmd_verify(file: &Path) -> Result<()> {
 }
 
 /// Full Hunt authorization check
-fn cmd_authorize(file: &Path) -> Result<()> {
+pub(crate) fn cmd_authorize(file: &Path) -> Result<()> {
     println!("K9: Hunt Authorization for {:?}", file);
     println!("─────────────────────────────────────");
     println!();
@@ -335,7 +351,7 @@ fn cmd_authorize(file: &Path) -> Result<()> {
     }
 
     // Check for signature
-    let sig_path = file.with_extension("k9.ncl.sig");
+    let sig_path = PathBuf::from(format!("{}.sig", file.display()));
     if !sig_path.exists() {
         println!();
         println!("K9: ⚠️  No signature found.");
@@ -355,7 +371,7 @@ fn cmd_authorize(file: &Path) -> Result<()> {
 }
 
 /// Add a public key to trusted keys
-fn cmd_trust(pubkey_path: &Path) -> Result<()> {
+pub(crate) fn cmd_trust(pubkey_path: &Path) -> Result<()> {
     let dirs = KeyDirs::new()?;
     dirs.ensure_created()?;
 
@@ -397,7 +413,7 @@ fn cmd_trust(pubkey_path: &Path) -> Result<()> {
 }
 
 /// Remove a key from trusted keys
-fn cmd_untrust(name: &str) -> Result<()> {
+pub(crate) fn cmd_untrust(name: &str) -> Result<()> {
     let dirs = KeyDirs::new()?;
     dirs.ensure_created()?;
 
@@ -415,7 +431,7 @@ fn cmd_untrust(name: &str) -> Result<()> {
 }
 
 /// List all keys
-fn cmd_list() -> Result<()> {
+pub(crate) fn cmd_list() -> Result<()> {
     let dirs = KeyDirs::new()?;
     dirs.ensure_created()?;
 
