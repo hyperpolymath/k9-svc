@@ -67,6 +67,37 @@ K9 implements tiered execution to prevent abuse:
 `'Yard`:: Nickel evaluation only. No I/O side effects.
 `'Hunt`:: Full triad execution. Requires cryptographic handshake.
 
+== Security
+
+K9 takes security seriously. Self-executing components require careful design and implementation.
+
+**⚠️ Important:** K9 is under active security hardening. See our roadmap for production readiness timeline.
+
+**For Users:**
+
+* **Before using K9:** Read link:docs/SECURITY-BEST-PRACTICES.adoc[Security Best Practices]
+* **Common questions:** See link:docs/SECURITY-FAQ.adoc[Security FAQ]
+* **Report vulnerabilities:** See link:SECURITY.md[Security Policy]
+
+**For Decision Makers:**
+
+* **Executive summary:** link:docs/SECURITY-FOR-DECISION-MAKERS.adoc[Security for Decision Makers]
+* **Implementation timeline:** link:docs/SECURITY-ROADMAP.adoc[Security Roadmap]
+* **Technical analysis:** link:SECURITY-SOLUTIONS-VS-MITIGATIONS.adoc[Solutions vs Mitigations]
+
+**Current Security Posture:**
+
+- **Kennel/Yard components:** Production-ready (data-only, no execution risks)
+- **Hunt components:** Development use only (requires Tier 1-3 hardening)
+- **Target:** 95% risk elimination after Tier 1-3 implementation (6-12 months)
+
+**Key Protections:**
+
+* Ed25519 digital signatures for Hunt components
+* Nickel contract validation at runtime
+* Three-tier security model (Kennel/Yard/Hunt isolation)
+* Planned: Rust rewrite, HSM key storage, mandatory sandboxing
+
 == File Recognition
 
 [cols="1,2"]

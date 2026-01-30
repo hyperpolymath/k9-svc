@@ -101,6 +101,23 @@ image::leash-diagram.svg[The Leash Security Model,700]
 | Deployments, installers, system modifications
 |===
 
+[WARNING]
+====
+**SECURITY NOTICE: Hunt-level components have full system access.**
+
+Before running Hunt components:
+
+1. **Verify digital signature** - Always check Ed25519 signatures
+2. **Review Just recipes** - Audit all commands that will execute
+3. **Use dry-run mode** - Preview actions before execution
+4. **Run as non-root** - Never run as root unless absolutely required
+5. **Sandbox when possible** - Use Docker/Firejail for external components
+
+**See:** link:docs/SECURITY-BEST-PRACTICES.adoc[Security Best Practices] for detailed guidance.
+
+**Current Security Status:** Hunt components are **development use only**. Production deployment requires Tier 1-3 security hardening (see link:docs/SECURITY-ROADMAP.adoc[Security Roadmap]).
+====
+
 === Checking Security Level
 
 [source,bash]
@@ -179,6 +196,29 @@ just show-config  # Export as JSON
 ----
 
 === Hunt Level (Full Execution)
+
+[CAUTION]
+====
+**⚠️ DANGER ZONE: Hunt-level components have unrestricted system access.**
+
+Hunt components can:
+
+- Execute arbitrary shell commands
+- Modify any file on the system
+- Access network resources
+- Install software packages
+- Change system configuration
+
+**REQUIRED before running Hunt components:**
+
+1. ✅ **Signature verified** - `./must verify component.k9.ncl`
+2. ✅ **Signing key trusted** - Verify fingerprint from 3+ independent sources
+3. ✅ **Code reviewed** - Read every line of Just recipes
+4. ✅ **Dry-run tested** - `./must --dry-run deploy component.k9.ncl`
+5. ✅ **Running as non-root** - Unless absolutely required
+
+**See:** link:docs/SECURITY-BEST-PRACTICES.adoc[Security Best Practices] - Security checklist for Hunt components.
+====
 
 Components that can execute recipes. **Requires cryptographic signature.**
 
