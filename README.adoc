@@ -32,11 +32,23 @@ cd k9-svc
 # Ensure dependencies (Nickel + Just)
 ./must ensure
 
+# Install k9-sign (memory-safe Rust signing tool)
+cd k9-sign && ./install.sh --user && cd ..
+
+# Generate signing keys
+k9-sign keygen primary
+k9-sign trust ~/.config/k9/keys/primary.pub
+
 # Register MIME type
 ./must run register-user
 
 # Validate everything
 ./must run dogfood
+
+# Security tools
+./k9-scan examples/hello.k9        # Static analysis
+./must verify examples/hello.k9    # Signature verification
+./must --dry-run run examples/hello.k9  # Preview mode
 ----
 
 == The Triad
@@ -93,10 +105,22 @@ K9 takes security seriously. Self-executing components require careful design an
 
 **Key Protections:**
 
-* Ed25519 digital signatures for Hunt components
+* Ed25519 digital signatures for Hunt components (k9-sign)
 * Nickel contract validation at runtime
 * Three-tier security model (Kennel/Yard/Hunt isolation)
-* Planned: Rust rewrite, HSM key storage, mandatory sandboxing
+* Root user refusal (--allow-root escape hatch)
+* Static analysis (k9-scan with 8 security checks)
+* Dry-run preview mode
+* Memory-safe Rust signing tool (eliminates injection/corruption)
+* Planned: HSM key storage, mandatory sandboxing, formal verification
+
+**Security Tools:**
+
+* `k9-sign` - Memory-safe Ed25519 signing (Rust, 15 tests, 756KB)
+* `k9-scan` - Static security analysis (8 checks for malware patterns)
+* `must --dry-run` - Preview actions before execution
+* `must verify` - Signature verification
+* Root refusal by default
 
 == File Recognition
 
