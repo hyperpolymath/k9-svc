@@ -1,4 +1,4 @@
-; SPDX-License-Identifier: AGPL-3.0-or-later
+; SPDX-License-Identifier: PMPL-1.0-or-later
 ; ECOSYSTEM.scm - K9 SVC Ecosystem Position
 
 (ecosystem
@@ -43,7 +43,7 @@
       (note . "Data constraints; K9 adds execution capability"))
 
     ; Potential consumers
-    (project "gitvisor"
+    (project "git-hud"
       (relationship . potential-consumer)
       (integration . "Could use K9 for repo state validation"))
     (project "robot-repo-bot"
