@@ -32,6 +32,13 @@ check-deps:
     @command -v file >/dev/null 2>&1 && echo "  ✓ file: available" || echo "  ○ file: not installed"
     @echo "K9: Dependency check complete."
 
+# Sync .machine_readable metadata into 6scm mirrors
+sync-6scm:
+    @mkdir -p .machine_readable/6scm
+    @for f in AGENTIC.scm ECOSYSTEM.scm META.scm NEUROSYM.scm PLAYBOOK.scm STATE.scm; do \
+      if [ -f ".machine_readable/$$f" ]; then cp -f ".machine_readable/$$f" ".machine_readable/6scm/$$f"; fi; \
+    done
+
 # ─────────────────────────────────────────────────────────────
 # MIME Registration
 # ─────────────────────────────────────────────────────────────
