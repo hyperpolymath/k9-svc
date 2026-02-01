@@ -13,6 +13,18 @@ K9 is a Self-Validating Component (SVC) standard built on the **must-just-nickel
 Unlike passive file formats that rely on external applications to interpret them, a `.k9` file
 carries its own validation contracts and deployment logic.
 
+== What It Does
+
+* Encodes validation, deployment, and recovery workflows in a single contract file.
+* Enforces tiered safety levels (Kennel/Yard/Hunt) before execution.
+* Provides signing and verification to support trusted execution.
+
+== Where It Is Going
+
+* Stronger default sandboxing for Hunt components.
+* Cleaner CI integration for validation and policy checks.
+* Broader templates for common infrastructure and automation tasks.
+
 [IMPORTANT]
 ====
 A `.k9` file is not a document you open; it is a component you unleash.
