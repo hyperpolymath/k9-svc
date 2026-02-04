@@ -4,7 +4,7 @@
 (ecosystem
  (version "1.0")
  (name "k9-svc")
- (type "TODO: library|application|tool|framework")
+ (type "library|application|tool|framework")
  (purpose "TODO: Brief purpose statement")
 
  (position-in-ecosystem
